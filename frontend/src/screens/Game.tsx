@@ -38,6 +38,7 @@ function Game() {
           setBoard(chess.board());
           console.log("Game initialized");
           setColor(message.payload.color);
+          console.log("color : ", color);
           break;
         case MOVE:
           const move = message.payload;
@@ -50,7 +51,9 @@ function Game() {
           }
           break;
         case GAME_OVER:
-          console.log("Game over");
+          setGameOver(true);
+
+          console.log("Game over color is : " + color);
           break;
       }
     };
@@ -70,11 +73,14 @@ function Game() {
         <div className="grid grid-cols-12 w-full">
           <div className="col-span-8 ">
             <Chessboard
+              color={color}
               chess={chess}
               setBoard={updateBoard}
               board={board}
               socket={socket}
               handleMove={handleMove}
+              setGameOver={setGameOver}
+              setWinner={setWinner}
             />
           </div>
           <div className="col-span-4 w-full self-center">
@@ -82,6 +88,10 @@ function Game() {
               {clicked === true ? (
                 color === "" ? (
                   "Waiting for other players"
+                ) : gameOver === true ? (
+                  <div className="text-2xl font-bold text-white">
+                    Game Over! {winner} wins
+                  </div>
                 ) : (
                   <div className="text-2xl font-bold text-white">
                     You are playing as {color.toUpperCase()}.

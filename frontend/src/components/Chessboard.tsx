@@ -8,6 +8,9 @@ export const Chessboard = ({
   setBoard,
   chess,
   handleMove,
+  setGameOver,
+  setWinner,
+  color,
 }: {
   board: ({
     square: Square;
@@ -18,6 +21,9 @@ export const Chessboard = ({
   setBoard: any;
   chess: Chess;
   handleMove: (from: string, to: string) => void;
+  setGameOver: any;
+  setWinner: any;
+  color: string;
 }) => {
   const [from, setFrom] = useState<string>("");
   const [to, setTo] = useState<string>("");
@@ -31,6 +37,7 @@ export const Chessboard = ({
   useEffect(() => {
     console.log(from, to);
   }, [from, to]);
+
   const handleSquareClick = async (row: number, col: number) => {
     const squareName = getSquareName(row, col);
     console.log(squareName);
@@ -51,41 +58,30 @@ export const Chessboard = ({
         setInvalidMove(true);
         setFrom("");
         setTo("");
+        return;
       }
-      handleMove(from, squareName);
+      const tempFrom = from;
+      setFrom("");
+      handleMove(tempFrom, squareName);
       setBoard(chess.board());
+      if (chess.isGameOver()) {
+        setWinner(chess.turn() === "w" ? "Black" : "White");
+        setGameOver(true);
+      }
       console.log("setboard called");
       console.log(board);
       setFrom("");
       setTo("");
     } else {
-      setFrom(squareName);
+      if (chess.turn() === color[0].toLowerCase()) {
+        setFrom(squareName);
+      }
     }
-    // if (from !== "" && to !== "") {
-    //   try {
-    //     await socket.send(
-    //       JSON.stringify({
-    //         type: "MOVE",
-    //         move: { from, to },
-    //       })
-    //     );
-    //     setInvalidMove(false);
-    //   } catch (error) {
-    //     console.log(error);
-    //     setInvalidMove(true);
-    //   }
-    //   handleMove(from, to);
-    //   setBoard(chess.board());
-    //   console.log("setboard called");
-    //   console.log(board);
-    //   setFrom("");
-    //   setTo("");
-    // }
   };
 
   return (
     <div>
-      <div className="grid grid-cols-8 grid-rows-8 gap-0 w-128 h-128">
+      <div className="grid grid-cols-8 grid-rows-8 gap-0 w-128 h-128 mt-10">
         {board.map((row, i) => {
           return row.map((square, j) => {
             return (

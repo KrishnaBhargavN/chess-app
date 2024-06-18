@@ -4,7 +4,7 @@ import Game from "./screens/Game";
 
 function App() {
   return (
-    <div className="h-screen bg-zinc-800">
+    <div className="min-h-screen bg-zinc-800">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
