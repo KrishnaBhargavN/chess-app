@@ -12,7 +12,10 @@ function Game() {
   const socket = useSocket();
   const [chess, setChess] = useState<Chess>(new Chess());
   const [board, setBoard] = useState(chess.board());
-
+  const [gameOver, setGameOver] = useState(false);
+  const [winner, setWinner] = useState<string>("");
+  const [color, setColor] = useState<string>("");
+  const [clicked, setClicked] = useState<boolean>(false);
   const handleMove = (from: string, to: string) => {
     chess.move({ from, to });
   };
@@ -34,6 +37,7 @@ function Game() {
         case INIT_GAME:
           setBoard(chess.board());
           console.log("Game initialized");
+          setColor(message.payload.color);
           break;
         case MOVE:
           const move = message.payload;
@@ -75,17 +79,28 @@ function Game() {
           </div>
           <div className="col-span-4 w-full self-center">
             <div className="flex justify-center ">
-              <Button
-                onClick={() => {
-                  socket.send(
-                    JSON.stringify({
-                      type: INIT_GAME,
-                    })
-                  );
-                }}
-              >
-                Play
-              </Button>
+              {clicked === true ? (
+                color === "" ? (
+                  "Waiting for other players"
+                ) : (
+                  <div className="text-2xl font-bold text-white">
+                    You are playing as {color.toUpperCase()}.
+                  </div>
+                )
+              ) : (
+                <Button
+                  onClick={() => {
+                    setClicked(true);
+                    socket.send(
+                      JSON.stringify({
+                        type: INIT_GAME,
+                      })
+                    );
+                  }}
+                >
+                  Play
+                </Button>
+              )}
             </div>
           </div>
         </div>

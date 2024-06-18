@@ -17,7 +17,7 @@ export const Chessboard = ({
   socket: WebSocket;
   setBoard: any;
   chess: Chess;
-  handleMove: any;
+  handleMove: (from: string, to: string) => void;
 }) => {
   const [from, setFrom] = useState<string>("");
   const [to, setTo] = useState<string>("");
@@ -37,29 +37,50 @@ export const Chessboard = ({
 
     if (from !== "") {
       setTo(squareName);
-    } else {
-      setFrom(squareName);
-    }
-    if (from !== "" && to !== "") {
+      console.log("to : ", to);
       try {
         await socket.send(
           JSON.stringify({
             type: "MOVE",
-            move: { from, to },
+            move: { from, to: squareName },
           })
         );
         setInvalidMove(false);
       } catch (error) {
         console.log(error);
         setInvalidMove(true);
+        setFrom("");
+        setTo("");
       }
-      handleMove(from, to);
+      handleMove(from, squareName);
       setBoard(chess.board());
       console.log("setboard called");
       console.log(board);
       setFrom("");
       setTo("");
+    } else {
+      setFrom(squareName);
     }
+    // if (from !== "" && to !== "") {
+    //   try {
+    //     await socket.send(
+    //       JSON.stringify({
+    //         type: "MOVE",
+    //         move: { from, to },
+    //       })
+    //     );
+    //     setInvalidMove(false);
+    //   } catch (error) {
+    //     console.log(error);
+    //     setInvalidMove(true);
+    //   }
+    //   handleMove(from, to);
+    //   setBoard(chess.board());
+    //   console.log("setboard called");
+    //   console.log(board);
+    //   setFrom("");
+    //   setTo("");
+    // }
   };
 
   return (
