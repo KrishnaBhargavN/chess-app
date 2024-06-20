@@ -52,7 +52,7 @@ function Game() {
           break;
         case GAME_OVER:
           setGameOver(true);
-
+          setWinner(message.payload.winner.toUpperCase());
           console.log("Game over color is : " + color);
           break;
       }

@@ -1,4 +1,4 @@
-import { Color, PieceSymbol, Square } from "chess.js";
+import { Color, PieceSymbol, Square, SQUARES } from "chess.js";
 import { useEffect, useState } from "react";
 import { Chess } from "chess.js";
 
@@ -72,8 +72,14 @@ export const Chessboard = ({
       console.log(board);
       setFrom("");
       setTo("");
+      console.log(chess.fen());
     } else {
-      if (chess.turn() === color[0].toLowerCase()) {
+      if (
+        chess.turn() === color[0].toLowerCase() &&
+        chess.get(squareName as Square)
+      ) {
+        console.log(chess.get(squareName as Square));
+
         setFrom(squareName);
       }
     }
